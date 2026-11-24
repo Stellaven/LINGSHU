@@ -1,0 +1,30 @@
+# KAG(OpenSPG) 图谱依赖不在此文件（与 pymilvus/llama-index 的 protobuf/nltk pin 冲突），
+# 用 scripts/install_kag.sh 单独两步安装
+opentelemetry-api==1.45.1
+opentelemetry-sdk==1.45.1
+opentelemetry-instrumentation-fastapi==0.66b1
+opentelemetry-instrumentation-requests==0.66b1
+
+pydantic-settings==2.16.1
+
+fastapi==0.161.1
+pymilvus==2.6.17
+mcp==2.3.0
+
+llama-index-core==0.14.25
+llama-index-embeddings-openai==0.7.0
+llama-index-llms-openai==0.8.4
+llama-index-vector-stores-milvus==1.2.0
+elasticsearch==8.15.1
+
+sqlalchemy==2.1.6
+asyncpg==0.32.0
+httpx==0.28.1
+
+pyjwt==2.15.1
+redis==8.1.0
+bullmq==3.6.0
+minio==7.2.20
+cryptography==50.0.2
+uvicorn==0.54.0
+python-multipart==0.0.32

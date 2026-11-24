@@ -1,0 +1,214 @@
+/* ============================================================
+   LlamaIndex 知识库 — 全局样式（Design System: Linear / Modern）
+   Token 与 .trae/config/DESIGN.md 保持一致
+   ============================================================ */
+@import 'tailwindcss';
+
+@theme {
+  /* ---- 颜色 Token ---- */
+  --color-base: #050506; /* 页面主画布 */
+  --color-deep: #020203; /* 最深层 */
+  --color-elevated: #0a0a0c; /* 浮起表面 / 弹窗 */
+  --color-input: #0f0f12; /* 表单输入底色 */
+  --color-ink: #ededef; /* 主文本（非纯白） */
+  --color-muted: #8a8f98; /* 次级文本 */
+  --color-accent: #5e6ad2; /* 主交互色 */
+  --color-accent-bright: #6872d9; /* 主交互色 hover */
+
+  /* ---- 字体 ---- */
+  --font-sans:
+    'Inter', 'Geist Sans', 'PingFang SC', 'HarmonyOS Sans SC',
+    'Microsoft YaHei', system-ui, sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, 'SF Mono', SFMono-Regular, Menlo, monospace;
+
+  /* ---- 缓动 / 动画 ---- */
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --animate-float: float 9s ease-in-out infinite;
+  --animate-float-slower: float 13s ease-in-out infinite;
+  --animate-pulse-slow: pulse-slow 7s ease-in-out infinite;
+  --animate-shimmer: shimmer 5s linear infinite;
+  --animate-fade-up: fade-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0) rotate(0deg);
+    }
+    50% {
+      transform: translateY(-24px) rotate(1.5deg);
+    }
+  }
+  @keyframes pulse-slow {
+    0%,
+    100% {
+      opacity: 0.45;
+    }
+    50% {
+      opacity: 0.9;
+    }
+  }
+  @keyframes shimmer {
+    0% {
+      background-position: 200% center;
+    }
+    100% {
+      background-position: -200% center;
+    }
+  }
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+  }
+  body {
+    @apply bg-base font-sans text-ink antialiased;
+  }
+  ::selection {
+    background: rgba(94, 106, 210, 0.4);
+    color: #fff;
+  }
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    border: 2px solid var(--color-base);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.16);
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}
+
+/* ---- 自定义工具类 ---- */
+
+/* 64px 技术网格 */
+@utility bg-grid {
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 64px 64px;
+}
+
+/* SVG 噪点纹理（防条带） */
+@utility bg-noise {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* 卡片基底：渐变表面 + 发丝边框 */
+@utility card-surface {
+  @apply rounded-2xl border border-white/6 bg-gradient-to-b from-white/8 to-white/2;
+}
+
+/* 标题渐变字（白 → 半透明） */
+@utility text-gradient {
+  @apply bg-gradient-to-b from-white via-white/95 to-white/60 bg-clip-text text-transparent;
+}
+
+/* 强调渐变字（流动光泽） */
+@utility text-gradient-accent {
+  @apply bg-gradient-to-r from-[#5E6AD2] via-indigo-400 to-[#5E6AD2] bg-clip-text text-transparent;
+  background-size: 200% auto;
+  animation: shimmer 5s linear infinite;
+}
+
+/* ---- 鼠标追踪光斑（v-spotlight 指令依赖） ---- */
+@layer components {
+  .spotlight {
+    position: relative;
+  }
+  .spotlight::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background: radial-gradient(
+      300px circle at var(--spot-x, 50%) var(--spot-y, 50%),
+      rgba(94, 106, 210, 0.15),
+      transparent 70%
+    );
+    opacity: 0;
+    transition: opacity 0.3s var(--ease-expo);
+  }
+  .spotlight:hover::before {
+    opacity: 1;
+  }
+
+  /* ---- 滚动条自动隐藏（v-scroll-auto-hide 指令依赖） ---- */
+  /* 静止时滚动条滑块透明，滚动中由指令加上 .is-scrolling 显示 */
+  .scroll-auto-hide {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+  }
+  .scroll-auto-hide::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  .scroll-auto-hide::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .scroll-auto-hide::-webkit-scrollbar-thumb {
+    background-color: transparent;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    background-clip: padding-box;
+  }
+  .scroll-auto-hide.is-scrolling {
+    scrollbar-color: rgba(255, 255, 255, 0.16) transparent;
+  }
+  .scroll-auto-hide.is-scrolling::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.16);
+  }
+}
+
+/* ---- 过渡动画（模态框等） ---- */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.zoom-enter-active {
+  transition:
+    transform 0.25s var(--ease-expo),
+    opacity 0.25s ease;
+}
+.zoom-leave-active {
+  transition:
+    transform 0.15s ease,
+    opacity 0.15s ease;
+}
+.zoom-enter-from,
+.zoom-leave-to {
+  opacity: 0;
+  transform: scale(0.96) translateY(8px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-enter-active,
+  .fade-leave-active,
+  .zoom-enter-active,
+  .zoom-leave-active {
+    transition: none;
+  }
+}
