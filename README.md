@@ -1,18 +1,40 @@
-# 灵枢 LingShu
+<div align="center">
 
-基于 [LlamaIndex](https://github.com/run-llama/llama_index) 的企业级 RAG 知识库平台：文档解析入库、向量 + 全文混合检索、重排序、知识图谱，并通过 MCP Server 将知识库检索能力暴露给任意 Agent。
+<img src="docs/assets/banner.svg" alt="灵枢 LingShu" width="100%"/>
 
-## 功能特性
+### 让每一条知识，皆可循脉而达
 
-- **多租户协作**：团队 / 项目 / 知识库三级结构，账号体系 + 细粒度成员权限
-- **文档处理流水线**：MinIO 对象存储 + BullMQ 任务队列（重试 / 指数退避 / 失败保留），支持 [Docling](https://github.com/DS4SD/docling) 解析（含 OCR）与内置解析策略
-- **混合检索**：Milvus 向量检索（bge-m3，1024 维）+ Elasticsearch 全文检索（每个知识库一个索引），支持 Rerank
-- **知识图谱（可选）**：基于 [OpenSPG / KAG](https://github.com/OpenSPG/KAG) 构建知识库图谱，检索策略可按知识库切换
-- **MCP Server**：内置 MCP 服务（`POST /mcp`），把知识库检索作为工具暴露给 Claude / Cursor 等外部 Agent
-- **安全**：JWT 双 Token（AT 滑动续期 + RT 滑动 / 绝对双生命周期）、RSA 加密传输密码、登录防暴力破解、统一鉴权中间件
-- **可观测**：OpenTelemetry 全链路埋点、结构化日志（trace_id 注入 + 按天滚动清理）
+**基于 [LlamaIndex](https://github.com/run-llama/llama_index) 的企业级 RAG 知识库平台**
+**文档解析 · 混合检索 · 知识图谱 · Agent 直连**
 
-## 系统架构
+[![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white)](https://www.python.org)
+[![FastAPI](https://img.shields.io/badge/FastAPI-async-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
+[![LlamaIndex](https://img.shields.io/badge/LlamaIndex-RAG-C275F5)](https://github.com/run-llama/llama_index)
+[![Vue](https://img.shields.io/badge/Vue-3-4FC08D?logo=vuedotjs&logoColor=white)](https://vuejs.org)
+[![Milvus](https://img.shields.io/badge/Milvus-vector-00A1E4)](https://milvus.io)
+[![Elasticsearch](https://img.shields.io/badge/Elasticsearch-fulltext-005571?logo=elasticsearch&logoColor=white)](https://www.elastic.co)
+[![MCP](https://img.shields.io/badge/MCP-Server-8A2BE2)](https://modelcontextprotocol.io)
+[![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)](https://docs.docker.com/compose)
+
+[功能特性](#-功能特性) · [系统架构](#-系统架构) · [快速开始](#-快速开始) · [服务说明](#-docker-服务说明) · [配置说明](#-配置说明) · [License](#-license)
+
+</div>
+
+---
+
+<br>
+
+## ✨ 功能特性
+
+- **多租户协作** — 团队 / 项目 / 知识库三级结构，账号体系 + 细粒度成员权限
+- **文档处理流水线** — MinIO 对象存储 + BullMQ 任务队列（重试 / 指数退避 / 失败保留），支持 [Docling](https://github.com/DS4SD/docling) 解析（含 OCR）与内置解析策略
+- **混合检索** — Milvus 向量检索（bge-m3，1024 维）× Elasticsearch 全文检索（每库一索引），支持 Rerank 重排序
+- **知识图谱（可选）** — 基于 [OpenSPG / KAG](https://github.com/OpenSPG/KAG) 构建图谱，检索策略按知识库自由切换
+- **MCP Server** — 内置 MCP 服务（`POST /mcp`），将知识库检索作为工具直连 Claude / Cursor 等任意 Agent
+- **安全** — JWT 双 Token（AT 滑动续期 + RT 双生命周期）、RSA 加密传输密码、登录防暴力破解、统一鉴权中间件
+- **可观测** — OpenTelemetry 全链路埋点，结构化日志（trace_id 注入 + 按天滚动清理）
+
+## 🏗️ 系统架构
 
 ```mermaid
 flowchart LR
@@ -44,7 +66,7 @@ flowchart LR
     API -.->|策略 graph=True| KAG["OpenSPG/KAG + Neo4j"]
 ```
 
-## 技术栈
+## 🧱 技术栈
 
 | 层 | 技术 |
 |---|---|
@@ -54,7 +76,7 @@ flowchart LR
 | 基础设施 | PostgreSQL · Redis · MinIO · BullMQ · OpenTelemetry |
 | 可选 | Docling (文档解析) · OpenSPG/KAG + Neo4j (知识图谱) |
 
-## 目录结构
+## 📁 目录结构
 
 ```
 ├── app/                    # FastAPI 后端
@@ -72,7 +94,7 @@ flowchart LR
 └── .env.example            # 环境配置模板（app/.env.example 为后端完整模板）
 ```
 
-## 快速开始
+## 🚀 快速开始
 
 ### 前置要求
 
@@ -80,7 +102,7 @@ flowchart LR
 - Python 3.11+
 - Node.js 18+
 
-### 1. 启动基础设施
+### 1 · 启动基础设施
 
 ```bash
 docker compose up -d
@@ -94,7 +116,7 @@ docker compose up -d
 docker compose --profile docling up -d
 ```
 
-### 2. 启动后端
+### 2 · 启动后端
 
 ```bash
 cd app
@@ -118,7 +140,7 @@ python main.py
 bash scripts/install_kag.sh
 ```
 
-### 3. 启动前端
+### 3 · 启动前端
 
 ```bash
 cd web
@@ -130,7 +152,7 @@ npm run dev
 
 使用演示账号登录：`demo / demo123`（仅用于本地联调，生产环境禁用）。
 
-## Docker Compose 服务说明
+## 🐳 Docker 服务说明
 
 | 服务 | 端口 | 说明 |
 |---|---|---|
@@ -144,7 +166,7 @@ npm run dev
 
 > OpenSPG/KAG 使用[官方 Docker 部署](https://github.com/OpenSPG/KAG)单独启动，服务地址通过 `KAG_OPENSPG_URL` 配置。
 
-## 配置说明
+## ⚙️ 配置说明
 
 后端配置位于 `app/.env.{ENV}`（`ENV` 默认 `dev`），完整模板见 [app/.env.example](app/.env.example)，所有配置项均有带注释的默认值。常用项：
 
@@ -158,8 +180,9 @@ npm run dev
 | `JWT_SECRET` | 生产环境必须替换（≥32 字符）并通过配置中心下发 |
 | `MINIO_*` | 对象存储地址与凭据 |
 
+> [!WARNING]
 > **生产环境注意**：`JWT_SECRET`、`PASSWORD_RSA_PRIVATE_KEY`（可用 `app/scripts/gen_rsa_keypair.py` 重新生成）、`MINIO_ACCESS_KEY/SECRET_KEY`、数据库口令等严禁使用开发默认值。
 
-## License
+## 📄 License
 
 暂未选定，请参见仓库 LICENSE 文件。
